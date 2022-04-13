@@ -1,32 +1,37 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 23
+    compileSdkVersion 32
     buildToolsVersion '23.0.3'
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 23
+        targetSdkVersion 32
     }
 
     // HttpClient is not supported in Android SDK 23
     useLibrary 'org.apache.http.legacy'
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
-    compile 'com.google.code.gson:gson:2.4'
-    compile 'org.apache.httpcomponents:httpclient-android:4.3.5.1'
-    compile('org.apache.httpcomponents:httpmime:4.3') {
+    implementation 'com.google.code.gson:gson:2.8.9'
+    implementation 'org.apache.httpcomponents:httpclient-android:4.3.5.1'
+    implementation('org.apache.httpcomponents:httpmime:4.5.6') {
         exclude module: "httpclient"
     }
 }
 
-apply plugin: 'maven'
-apply plugin: 'signing'
-
-signing {
-    sign configurations.archives
-}
+//apply plugin: 'maven'
+//apply plugin: 'signing'
+//
+//signing {
+//    sign configurations.archives
+//}
 
 // Group ID is the project name
 group = "com.microsoft.cognitive"
@@ -35,55 +40,3 @@ archivesBaseName = "speakerrecognition"
 // Update your version
 version = "1.1.0"
 
-// Upload artifacts to maven central repository staging servers
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-
-            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-                authentication(userName: ossrhUsername, password: ossrhPassword)
-            }
-
-            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-                authentication(userName: ossrhUsername, password: ossrhPassword)
-            }
-
-            pom.project {
-                // The readable name of the artifact
-                name 'Microsoft Cognitive Services Speaker Recognition Client Library'
-                packaging 'jar'
-
-                // optionally artifactId can be defined here
-
-                // Descriptions of the artifacts.
-                description 'This client library allows the use of Microsoft\'s state-of-the-art cloud-based speaker recognition algorithms to identify and verify a speaker\'s voice. See https://www.microsoft.com/cognitive-services/en-us/speaker-recognition-api for more information.'
-
-                // Project URL
-                url 'https://github.com/Microsoft/Cognitive-SpeakerRecognition-Android'
-
-                // Github information
-                scm {
-                    connection 'scm:git:https://github.com/Microsoft/Cognitive-SpeakerRecognition-Android'
-                    developerConnection 'scm:git:https://github.com/Microsoft/Cognitive-SpeakerRecognition-Android'
-                    url 'scm:git:https://github.com/Microsoft/Cognitive-SpeakerRecognition-Android'
-                }
-
-                licenses {
-                    license {
-                        name 'MIT'
-                        url 'https://github.com/Microsoft/Cognitive-SpeakerRecognition-Android/blob/master/LICENSE.md'
-                    }
-                }
-
-                developers {
-                    developer {
-                        id 'cognitiveservicesSDK'
-                        name 'Cognitive Services Client SDK'
-                        email 'cognitiveSDKs@microsoft.com'
-                    }
-                }
-            }
-        }
-    }
-}
